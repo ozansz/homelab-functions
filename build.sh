@@ -26,5 +26,5 @@ echo ""
 
 for f in `ls $ROOT/cmd`; do
     echo "[*] Building $f"
-    KO_DOCKER_REPO=$registry ko build --tags $tags -B $ROOT/cmd/$f
+    KO_DOCKER_REPO=$registry ko build --platform all --tags $tags -B $ROOT/cmd/$f
 done

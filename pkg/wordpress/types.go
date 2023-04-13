@@ -5,18 +5,6 @@ import (
 	"fmt"
 )
 
-type Comment struct {
-	// TODO
-}
-
-type Page struct {
-	// TODO
-}
-
-type Post struct {
-	// TODO
-}
-
 type Category struct {
 	ID   int    `json:"id"`
 	Link string `json:"link"`
@@ -40,12 +28,81 @@ type Category struct {
 	} `json:"_links,omitempty"`
 }
 
+type Comment struct {
+	ID        int    `json:"id"`
+	Post      int    `json:"post"`
+	Parent    int    `json:"parent"`
+	Author    int    `json:"author"`
+	AuthorURL string `json:"author_url"`
+	Date      string `json:"date"`
+	Content   struct {
+		Rendered string `json:"rendered"`
+	} `json:"content"`
+	Link string `json:"link"`
+}
+
+type Page struct {
+	ID       int    `json:"id"`
+	Date     string `json:"date"`
+	Link     string `json:"link"`
+	Modified string `json:"modified"`
+	Slug     string `json:"slug"`
+	Status   string `json:"status"`
+	Type     string `json:"type"`
+	Title    struct {
+		Rendered string `json:"rendered"`
+	} `json:"title"`
+	Content struct {
+		Rendered string `json:"rendered"`
+	} `json:"content"`
+	Excerpt struct {
+		Rendered string `json:"rendered"`
+	} `json:"excerpt"`
+	Author int `json:"author"`
+	Parent int `json:"parent"`
+}
+
+type Post struct {
+	ID       int    `json:"id"`
+	Date     string `json:"date"`
+	Modified string `json:"modified"`
+	Slug     string `json:"slug"`
+	Status   string `json:"status"`
+	Type     string `json:"type"`
+	Link     string `json:"link"`
+	Title    struct {
+		Rendered string `json:"rendered"`
+	} `json:"title"`
+	Content struct {
+		Rendered string `json:"rendered"`
+	} `json:"content"`
+	Excerpt struct {
+		Rendered string `json:"rendered"`
+	} `json:"excerpt"`
+	Author        int   `json:"author"`
+	FeaturedMedia int   `json:"featured_media"`
+	Categories    []int `json:"categories"`
+	Tags          []int `json:"tags"`
+}
+
 type Tag struct {
-	// TODO
+	ID          int    `json:"id"`
+	Count       int    `json:"count"`
+	Description string `json:"description"`
+	Link        string `json:"link"`
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Taxonomy    string `json:"taxonomy"`
 }
 
 type User struct {
-	// TODO
+	ID          int               `json:"id"`
+	Name        string            `json:"name"`
+	URL         string            `json:"url"`
+	Description string            `json:"description"`
+	Link        string            `json:"link"`
+	Slug        string            `json:"slug"`
+	AvatarURLs  map[string]string `json:"avatar_urls"`
 }
 
 type SiteContent struct {
