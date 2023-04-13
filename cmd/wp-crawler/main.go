@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ozansz/homelab/deploy/jobs/pkg/wordpress"
+	"github.com/ozansz/homelab-functions/pkg/wordpress"
 )
 
 var (
