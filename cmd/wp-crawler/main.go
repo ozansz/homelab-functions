@@ -69,7 +69,7 @@ func main() {
 		return
 	}
 
-	if err := minioCl.BatchUploadBytesWithDatePath(ctx, *minioBucket, data, minio.PutObjectOptions{
+	if err := minioCl.BatchUploadBytesWithDateTimePath(ctx, *minioBucket, data, minioext.LayoutYYYYMMDDHHMM, minio.PutObjectOptions{
 		ContentType: "application/json",
 	}); err != nil {
 		log.Fatalf("failed to upload data to minio: %v", err)

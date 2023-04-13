@@ -18,7 +18,26 @@ type Post struct {
 }
 
 type Category struct {
-	// TODO
+	ID   int    `json:"id"`
+	Link string `json:"link"`
+	Name string `json:"name"`
+	Slug string `json:"slug"`
+
+	Count       int    `json:"count,omitempty"`
+	Description string `json:"description,omitempty"`
+	Taxonomy    string `json:"taxonomy,omitempty"`
+	Parent      int    `json:"parent,omitempty"`
+	Links       struct {
+		Self []struct {
+			Href string `json:"href,omitempty"`
+		} `json:"self,omitempty"`
+		Collection []struct {
+			Href string `json:"href,omitempty"`
+		} `json:"collection,omitempty"`
+		About []struct {
+			Href string `json:"href,omitempty"`
+		} `json:"about,omitempty"`
+	} `json:"_links,omitempty"`
 }
 
 type Tag struct {

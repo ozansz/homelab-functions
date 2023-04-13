@@ -12,6 +12,15 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
+type DateTimePathLayout string
+
+const (
+	LayoutYYYYMMDDHHMMSS DateTimePathLayout = "2006/01/02/15/04/05"
+	LayoutYYYYMMDDHHMM   DateTimePathLayout = "2006/01/02/15/04"
+	LayoutYYYYMMDDHH     DateTimePathLayout = "2006/01/02/15"
+	LayoutYYYYMMDD       DateTimePathLayout = "2006/01/02"
+)
+
 type Client struct {
 	cl     *minio.Client
 	region string
@@ -110,10 +119,10 @@ func (cl *Client) UploadBytesWithDatePath(ctx context.Context, bucket, objectNam
 	return cl.UploadBytes(ctx, bucket, path, data, opts)
 }
 
-func (cl *Client) BatchUploadBytesWithDatePath(ctx context.Context, bucket string, objects map[string][]byte, opts minio.PutObjectOptions) error {
+func (cl *Client) BatchUploadBytesWithDateTimePath(ctx context.Context, bucket string, objects map[string][]byte, layout DateTimePathLayout, opts minio.PutObjectOptions) error {
 	now := time.Now().UTC()
 	for objectName, data := range objects {
-		path := fmt.Sprintf("%s/%s", now.Format("2006/01/02"), objectName)
+		path := fmt.Sprintf("%s/%s", now.Format(string(layout)), objectName)
 		if err := cl.UploadBytes(ctx, bucket, path, data, opts); err != nil {
 			return fmt.Errorf("failed to upload %s: %w", objectName, err)
 		}

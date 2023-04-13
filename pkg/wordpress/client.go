@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -86,10 +87,14 @@ func (c *Client) GetCategories(ctx context.Context) ([]Category, error) {
 		q.Add("page", fmt.Sprint(page))
 		req.URL.RawQuery = q.Encode()
 
+		log.Printf("getting categories page %d, request: %s %s", page, req.Method, req.URL.String())
+
 		res, err := c.cl.Do(req)
 		if err != nil {
 			return nil, fmt.Errorf("failed to do request: %w", err)
 		}
+
+		log.Printf("got response: %#v", res)
 		defer res.Body.Close()
 
 		switch res.StatusCode {
@@ -99,12 +104,17 @@ func (c *Client) GetCategories(ctx context.Context) ([]Category, error) {
 				return nil, fmt.Errorf("failed to decode response body to []Category: %w", err)
 			}
 			categories = append(categories, pageCats...)
+			if len(pageCats) < entitiesPerPage {
+				log.Printf("got %d categories, less than %d, assuming that's all", len(pageCats), entitiesPerPage)
+				return categories, nil
+			}
 		case http.StatusBadRequest:
 			var errRes APIErrorResponse
 			if err := json.NewDecoder(res.Body).Decode(&errRes); err != nil {
 				return nil, fmt.Errorf("failed to decode response body to APIErrorResponse: %w", err)
 			}
 			if errRes.IsInvalidPageNumber() {
+				log.Printf("got invalid page number error, got total %d categories", len(categories))
 				return categories, nil
 			}
 			return nil, fmt.Errorf("unexpected error: code: %s, message: %q", errRes.Code, errRes.Message)
