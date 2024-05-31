@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	port = flag.Int("port", 8080, "port to listen on")
+	port        = flag.Int("port", 8080, "port to listen on")
+	logRequests = flag.Bool("log_requests", false, "log requests to stdout")
 )
 
 type Response struct {
@@ -56,11 +57,24 @@ func main() {
 			RemoteAddr: r.RemoteAddr,
 			Method:     r.Method,
 		}
+		if *logRequests {
+			l := fmt.Sprintf("%s -> %s %s\n  ", resp.RemoteAddr, resp.Method, resp.URI.Path)
+			if len(resp.Headers) > 0 {
+				l += fmt.Sprintf("+ Headers:\n")
+				for k, v := range resp.Headers {
+					l += fmt.Sprintf("      %s: %s\n", k, v)
+				}
+				l += fmt.Sprintf("  + Body: %s\n\n", resp.Body)
+			}
+			log.Printf(l)
+		}
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			errorResponse(w, fmt.Sprintf("failed to encode response: %v", err))
 			return
 		}
 	})
+
+	log.Printf("Listening on port %d\n", *port)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", *port), router); err != nil {
 		log.Fatalf("failed to listen and serve: %v", err)
